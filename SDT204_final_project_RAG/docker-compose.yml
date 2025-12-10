@@ -1,0 +1,16 @@
+services:
+  rag-app:
+    build: .
+    image: local-rag-app
+    # Mount volumes so files in PyCharm update inside the container
+    volumes:
+      - ./data:/app/data               # Your local PDF folder maps to /app/data
+      - ./chroma_db:/app/chroma_db     # Persist DB locally
+      - ./chat_history.json:/app/chat_history.json # Persist JSON logs
+      - ./app.py:/app/app.py           # (Optional) Live code updates without rebuilding
+    environment:
+      # Tell the internal Python script to look for Ollama on the host
+      - OLLAMA_HOST=http://host.docker.internal:11434
+    # This allows the container to talk to your laptop's localhost
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
